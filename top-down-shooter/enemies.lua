@@ -37,11 +37,11 @@ end
 function drawZombies()
     for i,z in ipairs(zombies) do
         love.graphics.draw(
-            sprites.zombie, 
-            z.x, 
-            z.y, 
-            zombiePlayerAngle(z), 
-            nil, 
+            sprites.zombie,
+            z.x,
+            z.y,
+            zombiePlayerAngle(z),
+            nil,
             nil,
             sprites.zombie:getWidth()/2,
             sprites.zombie:getHeight()/2
