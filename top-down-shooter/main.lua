@@ -56,10 +56,9 @@ function love.update(dt)
 
         if player:collide(z) then
             z.collided = true
-            for _, z in ipairs(zombies) do
-                print(z.collided)
-                if z.collided == true then
-                    z.dead = true
+            for _, zombie in ipairs(zombies) do
+                if zombie.collided == true then
+                    zombie.dead = true
                 end
             end
 
@@ -72,14 +71,14 @@ function love.update(dt)
         end
     end
 
-    for i,b in ipairs(bullets) do
+    for _,b in ipairs(bullets) do
         accelerateBullet(b, dt)
     end
 
     checkBulletsOutOfBounds()
 
-    for i,z in ipairs(zombies) do
-        for j,b in ipairs(bullets) do
+    for _,z in ipairs(zombies) do
+        for _,b in ipairs(bullets) do
             if distanceBetween(z.x, z.y, b.x, b.y) < colision.zbOffset then
                 z.dead = true
                 b.dead = true
