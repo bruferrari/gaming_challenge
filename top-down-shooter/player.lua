@@ -1,7 +1,6 @@
 player = {
     life = 100,
-    acel = 180,
-    isColliding = false
+    acel = 180
 }
 
 function playerMouseAngle()

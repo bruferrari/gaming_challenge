@@ -4,12 +4,15 @@ require 'bullets'
 require 'colision'
 
 sprites = {}
-zombies = {}
 bullets = {}
 game = {
     state = 1,
     score = 0
 }
+
+function love.conf(t)
+    t.console = true
+end
 
 function love.load()
     math.randomseed(os.time()) -- improve the randomness
@@ -44,8 +47,12 @@ function love.update(dt)
         moveTowardsPlayer(z, dt)
 
         if player:collide(z) then
-            if not player.isColliding then
-                player.isColliding = true
+            z.collided = true
+            for _, z in ipairs(zombies) do
+                print(z.collided)
+                if z.collided == true then
+                    z.dead = true
+                end
             end
 
             player.life = player.life - 50
@@ -54,8 +61,6 @@ function love.update(dt)
                 clearZombies()
                 resetPlayerPos()
             end
-        else
-            player.isColliding = false
         end
     end
 
@@ -124,6 +129,10 @@ function love.keypressed(key)
 
     if key == 'escape' then
         love.event.quit()
+    end
+
+    if key == 'rctrl' then
+        debug.debug()
     end
 end
 
