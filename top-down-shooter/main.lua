@@ -6,6 +6,9 @@ require 'colision'
 sprites = {}
 bullets = {}
 game = {
+    width = 352,
+    height = 256,
+    scale = 2.5,
     state = 1,
     score = 0
 }
@@ -16,11 +19,16 @@ end
 
 function love.load()
     math.randomseed(os.time()) -- improve the randomness
+    love.window.setMode(game.width * game.scale, game.height * game.scale)
 
-    sprites.background = love.graphics.newImage('sprites/background.png')
-    sprites.bullet = love.graphics.newImage('sprites/bullet.png')
-    sprites.player = love.graphics.newImage('sprites/player.png')
-    sprites.zombie = love.graphics.newImage('sprites/zombie.png')
+    sprites.background       = love.graphics.newImage('sprites/background.png')
+    sprites.bullet           = love.graphics.newImage('sprites/bullet.png')
+    sprites.player           = love.graphics.newImage('sprites/player.png')
+    sprites.zombie           = love.graphics.newImage('sprites/zombie.png')
+    sprites.fullLife         = love.graphics.newImage('sprites/full_life_48x32.png')
+    sprites.halfLife         = love.graphics.newImage('sprites/half_life_48x32.png')
+    sprites.quarterLife      = love.graphics.newImage('sprites/quarter_life_48x32.png')
+    sprites.almostFullLife   = love.graphics.newImage('sprites/almost_full_life_48x32.png')
 
     resetPlayerPos()
     font = love.graphics.newFont(30)
@@ -55,7 +63,7 @@ function love.update(dt)
                 end
             end
 
-            player.life = player.life - 50
+            player.life = player.life - 25
 
             if player.life <= 0 then
                 clearZombies()
@@ -94,6 +102,7 @@ function love.update(dt)
 end
 
 function love.draw()
+    -- love.graphics.scale(game.scale, game.scale)
     love.graphics.draw(sprites.background, 0, 0)
 
     if game.state == 1 then
@@ -108,12 +117,6 @@ function love.draw()
         love.graphics.getWidth(),
         "center"
     )
-
-    if game.state == 2 then
-        love.graphics.printf(
-        "Life: "..player.life, 0, 0,love.graphics.getWidth(), "right"
-    )
-    end
 
     drawPlayer()
     drawZombies()
