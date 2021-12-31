@@ -4,7 +4,6 @@ require 'bullets'
 require 'colision'
 
 sprites = {}
-bullets = {}
 game = {
     width = 352,
     height = 256,

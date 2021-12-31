@@ -1,3 +1,5 @@
+bullets = {}
+
 function spawnBullet()
     local bullet = {}
     bullet.x = player.x
