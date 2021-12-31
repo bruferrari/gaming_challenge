@@ -63,10 +63,12 @@ function love.update(dt)
             end
 
             player.life = player.life - 25
+            player.acel = player.acel * 1.5
 
             if player.life <= 0 then
                 clearZombies()
                 resetPlayerPos()
+                resetPlayerAcel()
             end
         end
     end

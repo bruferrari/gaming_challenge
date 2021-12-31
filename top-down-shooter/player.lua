@@ -12,6 +12,10 @@ function resetPlayerPos()
     player.y = love.graphics.getHeight() / 2
 end
 
+function resetPlayerAcel()
+    player.acel = 180
+end
+
 function drawPlayer()
     if game.state == 2 then
         if player.life == 100 then
@@ -25,7 +29,7 @@ function drawPlayer()
         end
     end
 
-    if player.life < 100 then
+    if player.life <= 50 then
         love.graphics.setColor(255/255, 0, 0)
     end
 
