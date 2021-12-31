@@ -1,3 +1,5 @@
+zombies = {}
+
 function zombiePlayerAngle(zombie)
     return math.atan2(zombie.y - player.y, zombie.x - player.x) + math.pi
 end
@@ -8,6 +10,7 @@ function spawnZombie()
     zombie.y = 0
     zombie.acel = 100
     zombie.dead = false
+    zombie.collided = false
 
     local side = math.random(1, 4)
     if side == 1 then
@@ -37,11 +40,11 @@ end
 function drawZombies()
     for i,z in ipairs(zombies) do
         love.graphics.draw(
-            sprites.zombie, 
-            z.x, 
-            z.y, 
-            zombiePlayerAngle(z), 
-            nil, 
+            sprites.zombie,
+            z.x,
+            z.y,
+            zombiePlayerAngle(z),
+            nil,
             nil,
             sprites.zombie:getWidth()/2,
             sprites.zombie:getHeight()/2
