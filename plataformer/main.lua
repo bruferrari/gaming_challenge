@@ -2,7 +2,7 @@ wf = require('libs/windfield/windfield')
 anim8 = require('libs/anim8/anim8')
 sti = require('libs/Simple-Tiled-Implementation/sti')
 
-game = {
+Game = {
     width = 1000,
     height = 768,
     scale = 3
@@ -12,7 +12,7 @@ Sprites = {}
 Animations = {}
 
 function love.load()
-    love.window.setMode(game.width, game.height)
+    love.window.setMode(Game.width, Game.height)
     Sprites.playerSheet = love.graphics.newImage('sprites/playerSheet.png')
 
     local grid = anim8.newGrid(614, 564, Sprites.playerSheet:getWidth(), Sprites.playerSheet:getHeight())
@@ -36,7 +36,7 @@ function love.load()
     DangerZone = World:newRectangleCollider(0, 550, 800, 50, {collision_class = 'danger'})
     DangerZone:setType('static')
 
-    loadMap()
+    LoadMap()
 end
 
 function love.update(dt)
@@ -72,6 +72,6 @@ function love.mousepressed(x, y, button)
     end
 end
 
-function loadMap()
+function LoadMap()
     GameMap = sti('maps/lvl_one.lua')
 end
