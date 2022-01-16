@@ -1,6 +1,7 @@
 wf = require('libs/windfield/windfield')
 anim8 = require('libs/anim8/anim8')
 sti = require('libs/Simple-Tiled-Implementation/sti')
+cameraFile = require('libs/hump/camera')
 
 Game = {
     width = 1000,
@@ -10,12 +11,15 @@ Game = {
 
 Sprites = {}
 Animations = {}
+Platforms = {}
 
 function love.load()
     love.window.setMode(Game.width, Game.height)
     Sprites.playerSheet = love.graphics.newImage('sprites/playerSheet.png')
 
     local grid = anim8.newGrid(614, 564, Sprites.playerSheet:getWidth(), Sprites.playerSheet:getHeight())
+
+    cam = cameraFile()
 
     Animations.idle = anim8.newAnimation(grid('1-15', 1), 0.05)
     Animations.jump = anim8.newAnimation(grid('1-7', 2), 0.05)
@@ -30,25 +34,27 @@ function love.load()
 
     require('player')
 
-    Platform = World:newRectangleCollider(250, 400, 300, 100, {collision_class = 'platform'})
-    Platform:setType('static')
-
-    DangerZone = World:newRectangleCollider(0, 550, 800, 50, {collision_class = 'danger'})
-    DangerZone:setType('static')
+    -- DangerZone = World:newRectangleCollider(0, 550, 800, 50, {collision_class = 'danger'})
+    -- DangerZone:setType('static')
 
     LoadMap()
+end
+
+function love.draw()
+    cam:attach()
+    GameMap:drawLayer(GameMap.layers["Tile Layer 1"])
+    World:draw()
+    drawPlayer()
+    cam:detach()
 end
 
 function love.update(dt)
     World:update(dt)
     GameMap:update(dt)
     playerUpdate(dt)
-end
 
-function love.draw()
-    World:draw()
-    GameMap:drawLayer(GameMap.layers["Tile Layer 1"])
-    drawPlayer()
+    local px, py = Player:getPosition()
+    cam:lookAt(px, love.graphics.getHeight() / 2)
 end
 
 function love.keypressed(key)
@@ -72,6 +78,17 @@ function love.mousepressed(x, y, button)
     end
 end
 
+function SpawnPlatform(x, y, width, height)
+    if width > 0 and height > 0 then -- check if there are real platforms to be created
+        local platform = World:newRectangleCollider(x, y, width, height, {collision_class = 'platform'})
+        platform:setType('static')
+        table.insert(Platforms, platform)
+    end
+end
+
 function LoadMap()
     GameMap = sti('maps/lvl_one.lua')
+    for i, obj in pairs(GameMap.layers["Platforms"].objects) do
+        SpawnPlatform(obj.x, obj.y, obj.width, obj.height)
+    end
 end
