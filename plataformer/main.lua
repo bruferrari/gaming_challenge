@@ -16,14 +16,17 @@ Platforms = {}
 function love.load()
     love.window.setMode(Game.width, Game.height)
     Sprites.playerSheet = love.graphics.newImage('sprites/playerSheet.png')
+    Sprites.enemySheet = love.graphics.newImage('sprites/enemySheet.png')
 
     local grid = anim8.newGrid(614, 564, Sprites.playerSheet:getWidth(), Sprites.playerSheet:getHeight())
+    local enemyGrid = anim8.newGrid(100, 79, Sprites.enemySheet:getWidth(), Sprites.enemySheet:getHeight())
 
     cam = cameraFile()
 
     Animations.idle = anim8.newAnimation(grid('1-15', 1), 0.05)
     Animations.jump = anim8.newAnimation(grid('1-7', 2), 0.05)
     Animations.run = anim8.newAnimation(grid('1-15', 3), 0.05)
+    Animations.enemy = anim8.newAnimation(enemyGrid('1-2', 1), 0.03)
 
     World = wf.newWorld(0, 800, false)
     World:setQueryDebugDrawing(true)
@@ -33,6 +36,7 @@ function love.load()
     World:addCollisionClass('danger')
 
     require('player')
+    require('enemy')
 
     -- DangerZone = World:newRectangleCollider(0, 550, 800, 50, {collision_class = 'danger'})
     -- DangerZone:setType('static')
@@ -45,6 +49,7 @@ function love.draw()
     GameMap:drawLayer(GameMap.layers["Tile Layer 1"])
     World:draw()
     drawPlayer()
+    drawEnemies()
     cam:detach()
 end
 
@@ -52,6 +57,7 @@ function love.update(dt)
     World:update(dt)
     GameMap:update(dt)
     playerUpdate(dt)
+    UpdateEnemies(dt)
 
     local px, py = Player:getPosition()
     cam:lookAt(px, love.graphics.getHeight() / 2)
@@ -88,7 +94,11 @@ end
 
 function LoadMap()
     GameMap = sti('maps/lvl_one.lua')
-    for i, obj in pairs(GameMap.layers["Platforms"].objects) do
+    for _, obj in pairs(GameMap.layers["Platforms"].objects) do
         SpawnPlatform(obj.x, obj.y, obj.width, obj.height)
+    end
+
+    for _, obj in pairs(GameMap.layers["Enemies"].objects) do
+        SpawnEnemy(obj.x, obj.y)
     end
 end
