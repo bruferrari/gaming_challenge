@@ -26,3 +26,14 @@ function drawEnemies()
         enemy.animation:draw(Sprites.enemySheet, ex, ey, nil, enemy.direction, 1, 50, 65)
     end
 end
+
+function destroyEnemies()
+    local i = #Enemies
+    while i > -1 do
+        if Enemies[i] ~= nil then
+            Enemies[i]:destroy()
+        end
+        table.remove(Enemies, i)
+        i = i - 1
+    end
+end

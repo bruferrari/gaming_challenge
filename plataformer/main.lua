@@ -41,7 +41,12 @@ function love.load()
     -- DangerZone = World:newRectangleCollider(0, 550, 800, 50, {collision_class = 'danger'})
     -- DangerZone:setType('static')
 
-    LoadMap()
+    FlagX = 0
+    FlagY = 0
+
+    CurrentLevel = "lvl1"
+
+    LoadMap(CurrentLevel)
 end
 
 function love.draw()
@@ -61,6 +66,15 @@ function love.update(dt)
 
     local px, py = Player:getPosition()
     cam:lookAt(px, love.graphics.getHeight() / 2)
+
+    local colliders = World:queryCircleArea(FlagX, FlagY, 10, {'player'})
+    if #colliders > 0 then
+        if CurrentLevel == "lvl1" then
+            LoadMap('lvl2')
+        elseif CurrentLevel == "lvl2" then
+            LoadMap('lvl1')
+        end
+    end
 end
 
 function love.keypressed(key)
@@ -92,13 +106,33 @@ function SpawnPlatform(x, y, width, height)
     end
 end
 
-function LoadMap()
-    GameMap = sti('maps/lvl_one.lua')
+function destroyAllPlatforms()
+    local i = #Platforms
+    while i > -1 do
+        if Platforms[i] ~= nil then
+            Platforms[i]:destroy()
+        end
+        table.remove(Platforms, i)
+        i = i - 1
+    end
+end
+
+function LoadMap(mapName)
+    CurrentLevel = mapName
+    destroyAllPlatforms()
+    Player:setPosition(300, 100)
+    destroyEnemies()
+    GameMap = sti("maps/" .. mapName .. ".lua")
     for _, obj in pairs(GameMap.layers["Platforms"].objects) do
         SpawnPlatform(obj.x, obj.y, obj.width, obj.height)
     end
 
     for _, obj in pairs(GameMap.layers["Enemies"].objects) do
         SpawnEnemy(obj.x, obj.y)
+    end
+
+    for _, obj in pairs(GameMap.layers["Flag"].objects) do
+        FlagX = obj.x
+        FlagY = obj.y
     end
 end
